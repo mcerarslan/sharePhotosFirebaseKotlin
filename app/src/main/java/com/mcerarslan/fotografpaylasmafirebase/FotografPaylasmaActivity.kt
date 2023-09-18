@@ -12,21 +12,74 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_fotograf_paylasma.*
+import java.util.*
 
 class FotografPaylasmaActivity : AppCompatActivity() {
 
     var secilenGorsel : Uri? = null
     var secilenBitmap : Bitmap? = null
+    private lateinit var storage : FirebaseStorage
+    private lateinit var auth : FirebaseAuth
+    private lateinit var database : FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fotograf_paylasma)
+
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseFirestore.getInstance()
+
     }
 
     fun paylas(view: View){
+
+        //depo işlemleri
+        // UUID -> universal unique id
+        val uuid = UUID.randomUUID()
+        val  gorselIsmi = "${uuid}.jpeg"
+
+        val  reference = storage.reference
+        val  gorselReference = reference.child("images").child(gorselIsmi)
+
+        if(secilenGorsel != null) {
+            gorselReference.putFile(secilenGorsel!!).addOnSuccessListener { taskSnapshot ->
+                val yuklenenGorselReference = FirebaseStorage.getInstance().reference.child("images").child(gorselIsmi)
+                yuklenenGorselReference.downloadUrl.addOnSuccessListener {
+                    val downloadUrl = it.toString()
+                    val guncelKullaniciEmaili = auth.currentUser!!.email.toString()
+                    val kullaniciYorumu = editTextTextPersonName.text.toString()
+                    val tarih = Timestamp.now()
+                    //veritabanı işlemleri
+
+                    val postHashMap = hashMapOf<String,Any>()
+                    postHashMap.put("gorselurl",downloadUrl)
+                    postHashMap.put("email",guncelKullaniciEmaili)
+                    postHashMap.put("yorum",kullaniciYorumu)
+                    postHashMap.put("tarih",tarih)
+
+                    database.collection("Post").add(postHashMap).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            finish()
+                        }
+                    }.addOnFailureListener {
+                        Toast.makeText(applicationContext,it.localizedMessage,Toast.LENGTH_LONG).show()
+
+                    }
+                }.addOnFailureListener {
+                    Toast.makeText(applicationContext,it.localizedMessage,Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
 
     }
 
