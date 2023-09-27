@@ -1,4 +1,4 @@
-package com.mcerarslan.fotografpaylasmafirebase
+package com.mcerarslan.fotografpaylasmafirebase.view
 
 import android.Manifest
 import android.app.Activity
@@ -19,6 +19,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.mcerarslan.fotografpaylasmafirebase.R
 import kotlinx.android.synthetic.main.activity_fotograf_paylasma.*
 import java.util.*
 

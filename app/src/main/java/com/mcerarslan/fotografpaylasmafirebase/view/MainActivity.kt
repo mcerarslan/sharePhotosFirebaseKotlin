@@ -1,12 +1,12 @@
-package com.mcerarslan.fotografpaylasmafirebase
+package com.mcerarslan.fotografpaylasmafirebase.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.mcerarslan.fotografpaylasmafirebase.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         val guncelKullanici = auth.currentUser
         if (guncelKullanici != null) {
-            val intent = Intent(this,HaberlerActivity::class.java)
+            val intent = Intent(this, HaberlerActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                 val guncelKullanici = auth.currentUser?.email.toString()
                 Toast.makeText(this,"Hoşgeldin ${guncelKullanici}",Toast.LENGTH_LONG).show()
 
-                val intent = Intent(this,HaberlerActivity::class.java)
+                val intent = Intent(this, HaberlerActivity::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         auth.createUserWithEmailAndPassword(email,sifre).addOnCompleteListener {
             if (it.isSuccessful){
-                val intent = Intent(this,HaberlerActivity::class.java)
+                val intent = Intent(this, HaberlerActivity::class.java)
                 startActivity(intent)
                 finish()
             }
